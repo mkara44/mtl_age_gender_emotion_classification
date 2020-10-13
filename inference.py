@@ -80,38 +80,7 @@ def find_faces(gray):
     return all_faces
 
 
-def run_model_w_video(video_path):
-    cap = cv2.VideoCapture(video_path)
-
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        face_coord = find_faces(gray)
-        for coord in face_coord:
-            frame_to_model = preprocess(gray, coord)
-            predictions = model.predict(frame_to_model)
-            results = postprocess(predictions)
-
-            if results is not None:
-                cv2.putText(frame, ', '.join(results), (coord[0], coord[1] - 10),
-                            cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 255, 0), 2)
-                cv2.rectangle(frame, (coord[0], coord[1]), (coord[0] + coord[2], coord[1] + coord[3]),
-                              (0, 0, 255), 2)
-
-        cv2.imshow('Frame', frame)
-        pk = cv2.waitKey(2)
-        if pk == ord('q'):
-            break
-
-    cv2.destroyAllWindows()
-
-
-def run_model_w_image(image_path):
-    frame = cv2.imread(image_path)
+def model_pipe(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     face_coord = find_faces(gray)
@@ -126,6 +95,29 @@ def run_model_w_image(image_path):
             cv2.rectangle(frame, (coord[0], coord[1]), (coord[0] + coord[2], coord[1] + coord[3]),
                           (0, 0, 255), 2)
 
+
+def run_model_w_video(video_path):
+    cap = cv2.VideoCapture(video_path)
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        model_pipe(frame)
+
+        cv2.imshow('Frame', frame)
+        pk = cv2.waitKey(2)
+        if pk == ord('q'):
+            break
+
+    cv2.destroyAllWindows()
+
+
+def run_model_w_image(image_path):
+    frame = cv2.imread(image_path)
+
+    model_pipe(frame)
     cv2.imshow('Frame', frame)
     cv2.waitKey()
 
