@@ -81,7 +81,7 @@ def model_pipe(frame):
 
         if results is not None:
             cv2.putText(frame, ', '.join(results), (x, y - 10),
-                        cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 255, 0), 2)
+                        cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 3)
             cv2.rectangle(frame, (x, y), (x + w, y + h),
                           (0, 0, 255), 2)
 
@@ -107,6 +107,7 @@ def run_model_w_image(image_path):
     frame = cv2.imread(image_path)
 
     model_pipe(frame)
+    cv2.imwrite('readmeimg.png', frame)
     cv2.imshow('Frame', frame)
     cv2.waitKey()
 
