@@ -65,8 +65,8 @@ def postprocess(predictions):
     return results
 
 
-def find_faces(gray):
-    all_faces = []
+def model_pipe(frame):
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     faces = face_detector(gray)
     for face in faces:
@@ -75,24 +75,14 @@ def find_faces(gray):
         w = int(face.width()) if int(face.width()) > 0 else 0
         h = int(face.height()) if int(face.height()) > 0 else 0
 
-        all_faces.append([x, y, w, h])
-
-    return all_faces
-
-
-def model_pipe(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    face_coord = find_faces(gray)
-    for coord in face_coord:
-        frame_to_model = preprocess(gray, coord)
+        frame_to_model = preprocess(gray, [x, y, w, h])
         predictions = model.predict(frame_to_model)
         results = postprocess(predictions)
 
         if results is not None:
-            cv2.putText(frame, ', '.join(results), (coord[0], coord[1] - 10),
+            cv2.putText(frame, ', '.join(results), (x, y - 10),
                         cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 255, 0), 2)
-            cv2.rectangle(frame, (coord[0], coord[1]), (coord[0] + coord[2], coord[1] + coord[3]),
+            cv2.rectangle(frame, (x, y), (x + w, y + h),
                           (0, 0, 255), 2)
 
 
@@ -105,7 +95,6 @@ def run_model_w_video(video_path):
             break
 
         model_pipe(frame)
-
         cv2.imshow('Frame', frame)
         pk = cv2.waitKey(2)
         if pk == ord('q'):
