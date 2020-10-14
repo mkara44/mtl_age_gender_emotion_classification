@@ -1,0 +1,8 @@
+img_path,age,gender,emotion
+./data/0.png,Young,Male,Angry
+./data/1.png,Very Old,Male,Sad
+./data/2.png,Old,Female,Fear
+./data/3.png,Child,Female,Neutral
+./data/4.png,Middle Age,Female,Happy
+./data/5.png,Old,Male,Disgust
+./data/6.png,Child,Female,Surprised
