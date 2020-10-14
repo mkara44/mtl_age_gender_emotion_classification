@@ -107,7 +107,6 @@ def run_model_w_image(image_path):
     frame = cv2.imread(image_path)
 
     model_pipe(frame)
-    cv2.imwrite('readmeimg.png', frame)
     cv2.imshow('Frame', frame)
     cv2.waitKey()
 
